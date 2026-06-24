@@ -1,0 +1,37 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env/
+env/
+ENV/
+
+# Env vars
+.env
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+reports/
+*.json
+!payloads/*.json
+
+# Internal planning & tracking
+SSOT.md
+Documentation_Framework.md
+docs/00_LIFECYCLE/
+docs/05_PROGRESS/
+docs/06_LEDGER/
+docs/09_OUTREACH/
