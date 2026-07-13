@@ -1,72 +1,61 @@
-import json
+# ponytail: removed Reporter class wrapper in favor of direct functions
+from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
-from rich.text import Text
+from argus.models import ScanReport, Severity
 
-from argus.models import ScanReport
+console = Console()
 
-class Reporter:
-    """Formats and prints ScanReports to the console or saves them as JSON."""
-    
-    def __init__(self):
-        self.console = Console()
+SEVERITY_COLORS = {
+    Severity.CRITICAL: "bold red",
+    Severity.HIGH: "red",
+    Severity.MEDIUM: "yellow",
+    Severity.LOW: "cyan",
+}
 
-    def print_table(self, report: ScanReport, risk_level: str):
-        """Prints a highly polished terminal table using Rich."""
-        
-        # Color code the risk level
-        color_map = {
-            "CRITICAL": "bold red",
-            "HIGH": "red",
-            "MEDIUM": "yellow",
-            "LOW": "blue",
-            "SECURE": "bold green"
-        }
-        level_color = color_map.get(risk_level, "white")
-        
-        # Summary Panel
-        summary_text = (
-            f"Target URL: [cyan]{report.endpoint}[/cyan]\n"
-            f"Payloads Sent: {report.payloads_sent}\n"
-            f"Anomalies Detected: {len(report.anomalies_found)}\n"
-            f"Risk Score: [{level_color}]{report.overall_risk_score}/100[/{level_color}]\n"
-            f"Risk Level: [{level_color}]{risk_level}[/{level_color}]"
+RISK_LEVEL_COLORS = {
+    "CRITICAL": "bold white on red",
+    "HIGH": "bold red",
+    "MEDIUM": "bold yellow",
+    "LOW": "bold cyan",
+    "SECURE": "bold green",
+}
+
+def print_table(report: ScanReport, risk_level: str) -> None:
+    """Prints a styled summary dashboard and findings table to the terminal."""
+    level_style = RISK_LEVEL_COLORS.get(risk_level, "white")
+    summary_text = (
+        f"[bold]Target Endpoint:[/bold] {report.endpoint}\n"
+        f"[bold]Payloads Sent:[/bold]   {report.payloads_sent}\n"
+        f"[bold]Anomalies Found:[/bold] {len(report.anomalies_found)}\n"
+        f"[bold]Risk Score:[/bold]      {report.overall_risk_score}/100\n"
+        f"[bold]Risk Level:[/bold]      [{level_style}] {risk_level} [/{level_style}]"
+    )
+    console.print(Panel(summary_text, title="[bold cyan]Argus Scan Summary[/bold cyan]", expand=False))
+
+    if not report.anomalies_found:
+        console.print("[bold green]No anomalies detected. Target looks clean![/bold green]\n")
+        return
+
+    table = Table(title="Detected Security Anomalies", show_header=True, header_style="bold magenta")
+    table.add_column("Severity", style="bold", width=12)
+    table.add_column("Category", style="cyan", width=18)
+    table.add_column("Description", style="white")
+
+    for flag in report.anomalies_found:
+        color = SEVERITY_COLORS.get(flag.severity, "white")
+        table.add_row(
+            f"[{color}]{flag.severity.value}[/{color}]",
+            flag.category.value,
+            flag.description,
         )
-        self.console.print(Panel(summary_text, title="Argus Scan Summary", border_style="cyan"))
+    console.print(table)
 
-        if not report.anomalies_found:
-            self.console.print("[bold green]No vulnerabilities detected. API is secure against tested payloads.[/bold green]")
-            return
-
-        # Detailed Findings Table
-        table = Table(title="Detected Anomalies", show_header=True, header_style="bold magenta")
-        table.add_column("Severity", style="bold", width=12)
-        table.add_column("Category", style="cyan")
-        table.add_column("Description")
-        
-        for flag in report.anomalies_found:
-            # Map severity to color for the table
-            sev_str = flag.severity.value
-            if flag.severity.name == "CRITICAL":
-                sev_color = "[bold red]"
-            elif flag.severity.name == "HIGH":
-                sev_color = "[red]"
-            elif flag.severity.name == "MEDIUM":
-                sev_color = "[yellow]"
-            else:
-                sev_color = "[blue]"
-                
-            table.add_row(
-                f"{sev_color}{sev_str}[/]",
-                flag.category.value,
-                flag.description
-            )
-            
-        self.console.print(table)
-        
-    def export_json(self, report: ScanReport, filepath: str):
-        """Exports the ScanReport to a JSON file."""
-        with open(filepath, "w") as f:
-            json.dump(report.model_dump(), f, indent=4)
-        self.console.print(f"[bold green]Report exported to {filepath}[/bold green]")
+def export_json(report: ScanReport, filepath: str | Path) -> None:
+    """Exports the full scan report as formatted JSON."""
+    path = Path(filepath)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w") as f:
+        f.write(report.model_dump_json(indent=4))
+    console.print(f"[green]Successfully exported scan report to {path}[/green]")
