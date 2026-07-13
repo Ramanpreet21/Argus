@@ -1,4 +1,3 @@
-```markdown
 # Argus — Automated API Security & Anomaly Scanner
 
 Argus is a fast, deterministic, asynchronous API security tool designed to bring comprehensive vigilance to REST/HTTP endpoints. Named after Argus Panoptes, the mythological all-seeing giant who kept half his eyes wide open even while resting, this tool maps systemic exposures without horizontal scanning latency. 
@@ -12,12 +11,12 @@ By capturing an unattacked baseline ResponseSnapshot and evaluating concurrent m
 Argus processes scanning operations down a sequential, zero-dependency engine architecture:
 
 
-```
+---
 
 [ 1. LOADER ] ──> [ 2. DISPATCHER ] ──> [ 3. CLASSIFIER ] ──> [ 4. SCORER ] ──> [ 5. REPORTER ]
 YAML Payloads      Async HTTP (httpx)    8 Heuristics Loop    Weighted Math     Rich CLI / JSON
 
-```
+---
 
 1. **Payload Loader:** Parses structured, type-safe attack matrices from a localized configuration layer mapping 5 key OWASP API risk classifications (SQLi, XSS, BOLA, Auth Bypass, Server Misconfigurations).
 2. **Async Dispatcher:** Leverages asyncio and httpx to handle baseline capturing and parallelized payload execution with native rate-limit (429) resilience via tenacity.
