@@ -11,12 +11,9 @@ By capturing an unattacked baseline ResponseSnapshot and evaluating concurrent m
 Argus processes scanning operations down a sequential, zero-dependency engine architecture:
 
 
----
+[ 1. LOADER ]  →   [ 2. DISPATCHER ]   →  [ 3. CLASSIFIER ]  →  [ 4. SCORER ]  →  [ 5. REPORTER ]
+YAML Payloads      Async HTTP (httpx)     8 Heuristics Loop     Weighted Math      Rich CLI / JSON
 
-[ 1. LOADER ] ──> [ 2. DISPATCHER ] ──> [ 3. CLASSIFIER ] ──> [ 4. SCORER ] ──> [ 5. REPORTER ]
-YAML Payloads      Async HTTP (httpx)    8 Heuristics Loop    Weighted Math     Rich CLI / JSON
-
----
 
 1. **Payload Loader:** Parses structured, type-safe attack matrices from a localized configuration layer mapping 5 key OWASP API risk classifications (SQLi, XSS, BOLA, Auth Bypass, Server Misconfigurations).
 2. **Async Dispatcher:** Leverages asyncio and httpx to handle baseline capturing and parallelized payload execution with native rate-limit (429) resilience via tenacity.
@@ -54,12 +51,5 @@ python -m argus scan \
 
 Dig deeper into the functional core and design paradigms of the system:
 
-* **[System Design](https://www.google.com/search?q=docs/01_ARCHITECTURE/00_system_overview.md)** — Core pipelines, module breakdowns, and architectural blueprints.
-* **[Architecture Decisions (ADRs)](https://www.google.com/search?q=docs/02_ADR/)** — Chronological context log of tech stack definitions and system specifications.
-* **[Anomaly Heuristics](https://www.google.com/search?q=docs/04_INTERNALS/00_anomaly_heuristics.md)** — Detailed specification of the 8 differential evaluation methods.
-* **[Risk Scoring Formula](https://www.google.com/search?q=docs/04_INTERNALS/01_risk_scoring_algorithm.md)** — The weighted math and categorization algorithms tracking exploitation danger.
-* **[Full Getting Started Guide →](https://www.google.com/search?q=docs/03_GUIDES/00_getting_started.md)** — Advanced configuration parameters, seeding mock targets, and automation usage.
-
-```
-
-```
+* **[System Design](docs/01_ARCHITECTURE/00_system_overview.md)** — Core pipelines, module breakdowns, and architectural blueprints.
+* **[Architecture Decisions (ADRs)](docs/02_ADR/)** — Chronological context log of tech stack definitions and system specifications.
