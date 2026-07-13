@@ -13,7 +13,7 @@ Argus processes scanning operations down a sequential, zero-dependency engine ar
 
 [ 1. LOADER ] ──> [ 2. DISPATCHER ] ──> [ 3. CLASSIFIER ] ──> [ 4. SCORER ] ──> [ 5. REPORTER ]
 
-YAML Payloads      Async HTTP (httpx)    8 Heuristics Loop    Weighted Math     Rich CLI / JSON
+YAML Payloads      Async HTTP (httpx)    8 Heuristics Loop    Weighted Math      Rich CLI / JSON
 
 
 1. **Payload Loader:** Parses structured, type-safe attack matrices from a localized configuration layer mapping 5 key OWASP API risk classifications (SQLi, XSS, BOLA, Auth Bypass, Server Misconfigurations).
